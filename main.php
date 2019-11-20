@@ -53,16 +53,44 @@
        display: inline-block;
      }
    </style>
+   <script src="http://code.jquery.com/jquery-latest.js"></script>
+   <script type="text/javascript">
+     $(function(){
+       var counter = 0;
+       $(".graph").on('click', function(e){
+           e.preventDefault();
+           $.ajax({
+             type: "POST",
+             url: "table.php",
+             data: 'attrib='+$(e.target).attr("class"),
+             success: function(response){
+               var answer = response.split(" ");
+               counter++;
+               addToTable(answer[1], answer[2]);
+               }
+           });
+       });
+
+       function addToTable (hit, stime){
+         $("#resultSet tr:last").after('<tr><td>'+counter+'</td><td>'+hit+'</td><td>'+new Date()+'</td><td>'+stime+'</td></tr>');
+       }
+
+
+       $('.radcheck').click(function(){
+         $('.radcheck').removeAttr('checked','checked');
+         $(this).prop('checked', true);
+       });
+     });
+   </script>
  </head>
  <body>
-   <!--<?php echo "suck"; ?>-->
    <div id="header">
      Яремко Роман Группа: R3236(P3202) Вариант: 202023
    </div>
    <div class="top">
          <div id="svg">
            <svg version="1.2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="graph" aria-labelledby="title" role="img">
-             <title id="title">A line chart showing some information</title>
+             <title id="title">хех лол</title>
              <g class="grid x-grid" id="xGrid">
                <line x1="220" x2="220" y1="20" y2="420"></line>
                <polygon points="220,0 215,20 225,20" stroke="#ccc" fill="#ccc"></polygon>
@@ -87,11 +115,9 @@
                <text x="230" y="10" class="label-title">y</text>
              </g>
              <g class="data" data-setname="Our first data set">
-              <a href="#">
-                 <rect x="120" y="220" width="100" height="200"/>
-                 <polygon points="220,120 120,220 220,220"></polygon>
-                 <path d="M 220 320 A 100 100, 90, 0, 0, 320 220 L 220 220 Z"></path>
-              </a>
+                 <rect class="meichu" x="120" y="220" width="100" height="200"/>
+                 <polygon class="meichu" points="220,120 120,220 220,220"></polygon>
+                 <path class="meichu" d="M 220 320 A 100 100, 90, 0, 0, 320 220 L 220 220 Z"></path>
              </g>
            </svg>
          </div>
@@ -135,11 +161,11 @@
                </tr>
                <tr>
                  <td>R</td>
-                 <td><input type="checkbox" name="radius" value="1"></td>
-                 <td><input type="checkbox" name="radius" value="1.5"></td>
-                 <td><input type="checkbox" name="radius" value="2"></td>
-                 <td><input type="checkbox" name="radius" value="2.5"></td>
-                 <td><input type="checkbox" name="radius" value="3"></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="1"></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="1.5"></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="2" checked></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="2.5"></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="3"></td>
                </tr>
              </table>
              <input type="submit">
@@ -147,18 +173,12 @@
          </div>
    </div>
    <div>
-     <table>
+     <table id="resultSet">
        <tr>
          <td>№</td>
          <td>Попадание</td>
          <td>Время</td>
          <td>Время работы скрипта</td>
-       </tr>
-       <tr>
-         <td>1</td>
-         <td>true</td>
-         <td>24:61</td>
-         <td>1 sec</td>
        </tr>
      </table>
    </div>
