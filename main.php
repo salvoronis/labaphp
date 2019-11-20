@@ -1,11 +1,14 @@
+<!DOCTYPE html>
 <html>
- <head>
+ <head lang="en" xmlns:https="http://www.w3.org/1999/xhtml">
+   <meta charset="UTF-8">
    <title>piha</title>
    <style type="text/css">
      #header {
        font-family: cursive;
        font-size: 20pt;
-       color: green;
+       color: #576333;
+       padding-bottom: 20px;
      }
      #svg {
        width: 900px;
@@ -19,15 +22,15 @@
        text-anchor: end;
      }
 
-
      .graph {
        height: 500px;
        width: 800px;
        border: 2px solid black;
+       background: #e3d9da;
      }
 
      .graph .grid {
-       stroke: #ccc;
+       stroke: #acb299;
        stroke-dasharray: 0;
        stroke-width: 1;
      }
@@ -44,16 +47,38 @@
      }
 
      .data {
-       fill: red;
+       fill: #bb4b64 ;
        stroke-width: 1;
-       opacity: 50%;
+       opacity: 60%;
      }
 
      .top div {
        display: inline-block;
      }
+
+     #resultSet {
+       border-collapse: collapse;
+     }
+     #tableHead {
+       border-bottom: 3px solid #B9B29F;
+       padding: 10px;
+       text-align: left;
+     }
+     .tableCell {
+       padding: 10px;
+     }
+     .tableCell:nth-child(odd) {
+       background: white;
+     }
+     .tableCell:nth-child(even) {
+       background: #acb299;
+     }
+     .tableCell td {
+       padding-left: 5px;
+     }
    </style>
    <script src="http://code.jquery.com/jquery-latest.js"></script>
+   <script src="lib/date.format.js"></script>
    <script type="text/javascript">
      $(function(){
        var counter = 0;
@@ -72,7 +97,7 @@
        });
 
        function addToTable (hit, stime){
-         $("#resultSet tr:last").after('<tr><td>'+counter+'</td><td>'+hit+'</td><td>'+new Date()+'</td><td>'+stime+'</td></tr>');
+         $("#resultSet tr:last").after('<tr class="tableCell"><td>'+counter+'</td><td>'+hit+'</td><td>'+new Date().format("dd mmm HH:MM:ss")+'</td><td>'+stime+'</td></tr>');
        }
 
 
@@ -93,11 +118,11 @@
              <title id="title">хех лол</title>
              <g class="grid x-grid" id="xGrid">
                <line x1="220" x2="220" y1="20" y2="420"></line>
-               <polygon points="220,0 215,20 225,20" stroke="#ccc" fill="#ccc"></polygon>
+               <polygon points="220,0 215,20 225,20" stroke="#acb299" fill="#acb299"></polygon>
              </g>
              <g class="grid y-grid" id="yGrid">
                <line x1="20" x2="420" y1="220" y2="220"></line>
-               <polygon points="420,215 420,225 440,220" stroke="#ccc" fill="#ccc"></polygon>
+               <polygon points="420,215 420,225 440,220" stroke="#acb299" fill="#acb299"></polygon>
              </g>
              <g class="labels x-labels">
                <text x="20" y="220">-r</text>
@@ -174,11 +199,11 @@
    </div>
    <div>
      <table id="resultSet">
-       <tr>
-         <td>№</td>
-         <td>Попадание</td>
-         <td>Время</td>
-         <td>Время работы скрипта</td>
+       <tr id="tableHead">
+         <th>№</th>
+         <th>Попадание</th>
+         <th>Время</th>
+         <th>Время работы скрипта</th>
        </tr>
      </table>
    </div>
