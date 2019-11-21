@@ -23,14 +23,15 @@
      }
 
      .graph {
-       height: 500px;
-       width: 800px;
+       height: 540px;
+       width: 510px;
        border: 2px solid black;
        background: #e3d9da;
      }
 
      .graph .grid {
-       stroke: #acb299;
+       sstroke: #acb299;
+       stroke: black;
        stroke-dasharray: 0;
        stroke-width: 1;
      }
@@ -105,14 +106,6 @@
          $('.radcheck').removeAttr('checked','checked');
          $(this).prop('checked', true);
        });
-
-       /*$('#foorm').submit(function(e){
-         console.log("123");
-         var xdim = $('.xdim').each(function(){
-           console.log($(this).val());
-         });
-         console.log(xdim);
-       });*/
      });
 
     function pognali(){
@@ -123,7 +116,6 @@
       var minx;
       var maxx;
       var xdim = $('.xdim').each(function(){
-         //console.log($(this).val());
          if ($(this).prop('checked') == true){
            sos++;
            xar.push($(this).val());
@@ -133,7 +125,7 @@
        });
 
       var ydim = $('#ydim').val();
-      var reg = /^[0-2]|-[1-5]..[0-3]|-[1-4]$/;
+      var reg = /^-?[0-5]..-?[0-5]$/
       yok = reg.test(ydim);
       var dig = ydim.split('..');
       if (yok && (dig[0]<dig[1])) {
@@ -142,18 +134,69 @@
         yok = false;
       }
 
-
-      if ((sos < 2) || !yok){
-        $('.form').after('<div id="kotae">nea</div>');
-      } else {
-        $('#kotae').remove();
-      }
-
       $('.radcheck').each(function(){
         if ($(this).prop('checked') == true){
           radius = $(this).val();
         }
       });
+
+
+      if ((sos < 2) || !yok){
+        $('.form').after('<div id="kotae">Data error</div>');
+      } else {
+        $('#kotae').remove();
+        doIT(maxx, minx, dig[0], dig[1]);
+        doFig(radius)
+      }
+     }
+
+     function doIT(maxx, minx, miny, maxy){
+       var point = 20;
+       for (var i = -5; i < 6; i++) {
+         if (minx == i) {
+           minx = point;
+         }
+         if (maxx == i) {
+           maxx = point;
+         }
+         if (miny == i) {
+           miny = point;
+         }
+         if (maxy == i){
+           maxy = point;
+         }
+         point+=50;
+       }
+       $('#xline').attr('x1',minx);
+       $('#xline').attr('x2',maxx);
+       $('#xtrig').attr('points', maxx+',265 '+maxx+',275 '+(maxx+20)+',270');
+       $('#xp').attr('x', maxx+10);
+       $('#yline').attr('y1',miny);
+       $('#yline').attr('y2',maxy);
+       $('#ytrig').attr('points', '270,'+(miny-20)+' 265,'+miny+' 275,'+miny);
+       $('#yp').attr('y',miny-10);
+     }
+
+     function doFig(r){
+       r*=50;
+       var rh = r/2;
+       var ostRec = 195+(75-rh);
+       var poly = 270-rh;
+       var ring = 270+rh;
+       var pointy = 270-r;
+       $('rect').attr('x', ostRec);
+       $('rect').attr('width', rh);
+       $('rect').attr('height', r);
+       $('#triangle').attr('points', '270,'+poly+' '+poly+',270 270,270');
+       $('path').attr('d','M 270 '+ring+' A '+rh+' '+rh+', 90, 0, 0, '+ring+' 270 L 270 270 Z');
+       $('.ypoint').each(function(index){
+         var kuda = (index*rh)+pointy;
+         $(this).attr('y',kuda);
+       });
+       $('.xpoint').each(function(index){
+         var kuda = (index*rh)+pointy;
+         $(this).attr('x',kuda);
+       });
      }
    </script>
  </head>
@@ -166,32 +209,33 @@
            <svg version="1.2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="graph" aria-labelledby="title" role="img">
              <title id="title">хех лол</title>
              <g class="grid x-grid" id="xGrid">
-               <line x1="220" x2="220" y1="20" y2="420"></line>
-               <polygon points="220,0 215,20 225,20" stroke="#acb299" fill="#acb299"></polygon>
+               <line id="yline" x1="270" x2="270" y1="20" y2="520"></line>
+               <polygon id="ytrig" points="270,0 265,20 275,20" stroke="#acb299" fill="#acb299"></polygon>
              </g>
              <g class="grid y-grid" id="yGrid">
-               <line x1="20" x2="420" y1="220" y2="220"></line>
-               <polygon points="420,215 420,225 440,220" stroke="#acb299" fill="#acb299"></polygon>
+               <line fill="black" id="xline" x1="20" x2="420" y1="270" y2="270"></line>
+               <polygon id="xtrig" points="420,265 420,275 440,270" stroke="#acb299" fill="#acb299"></polygon>
              </g>
              <g class="labels x-labels">
-               <text x="20" y="220">-r</text>
-               <text x="120" y="220">-r/2</text>
-               <text x="220" y="220">0</text>
-               <text x="320" y="220">r/2</text>
-               <text x="420" y="220">r</text>
-               <text x="430" y="215" class="label-title">x</text>
+               <text class="xpoint" x="120" y="270">-r</text>
+               <text class="xpoint" x="195" y="270">-r/2</text>
+               <text class="xpoint" x="270" y="270">0</text>
+               <text class="xpoint" x="345" y="270">r/2</text>
+               <text class="xpoint" x="420" y="270">r</text>
+               <text id="xp" x="430" y="265" class="label-title">x</text>
              </g>
              <g class="labels y-labels">
-               <text x="220" y="20">r</text>
-               <text x="220" y="120">r/2</text>
-               <text x="220" y="320">-r/2</text>
-               <text x="220" y="420">-r</text>
-               <text x="230" y="10" class="label-title">y</text>
+               <text class="ypoint" x="270" y="120">r</text>
+               <text class="ypoint" x="270" y="195">r/2</text>
+               <text class="ypoint" x="270" y="270"></text>
+               <text class="ypoint" x="270" y="345">-r/2</text>
+               <text class="ypoint" x="270" y="420">-r</text>
+               <text id="yp" x="270" y="10" class="label-title">y</text>
              </g>
              <g class="data" data-setname="Our first data set">
-                 <rect class="meichu" x="120" y="220" width="100" height="200"/>
-                 <polygon class="meichu" points="220,120 120,220 220,220"></polygon>
-                 <path class="meichu" d="M 220 320 A 100 100, 90, 0, 0, 320 220 L 220 220 Z"></path>
+                 <rect class="meichu" x="195" y="270" width="75" height="150"/>
+                 <polygon id="triangle" class="meichu" points="270,195 195,270 270,270"></polygon>
+                 <path class="meichu" fill="gray" d="M 270 345 A 75 75, 90, 0, 0, 345 270 L 270 270 Z"></path>
              </g>
            </svg>
          </div>
@@ -237,9 +281,9 @@
                  <td>R</td>
                  <td><input class="radcheck" type="checkbox" name="radius" value="1"></td>
                  <td><input class="radcheck" type="checkbox" name="radius" value="1.5"></td>
-                 <td><input class="radcheck" type="checkbox" name="radius" value="2" checked></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="2"></td>
                  <td><input class="radcheck" type="checkbox" name="radius" value="2.5"></td>
-                 <td><input class="radcheck" type="checkbox" name="radius" value="3"></td>
+                 <td><input class="radcheck" type="checkbox" name="radius" value="3" checked></td>
                </tr>
              </table>
              <input id="butt" type="button" onclick="pognali();">
