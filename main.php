@@ -105,7 +105,56 @@
          $('.radcheck').removeAttr('checked','checked');
          $(this).prop('checked', true);
        });
+
+       /*$('#foorm').submit(function(e){
+         console.log("123");
+         var xdim = $('.xdim').each(function(){
+           console.log($(this).val());
+         });
+         console.log(xdim);
+       });*/
      });
+
+    function pognali(){
+      var sos = 0;
+      var yok = false;
+      var radius = 0;
+      let xar = new Array();
+      var minx;
+      var maxx;
+      var xdim = $('.xdim').each(function(){
+         //console.log($(this).val());
+         if ($(this).prop('checked') == true){
+           sos++;
+           xar.push($(this).val());
+           maxx = Math.max.apply(Math, xar);
+           minx = Math.min.apply(Math, xar);
+         }
+       });
+
+      var ydim = $('#ydim').val();
+      var reg = /^[0-2]|-[1-5]..[0-3]|-[1-4]$/;
+      yok = reg.test(ydim);
+      var dig = ydim.split('..');
+      if (yok && (dig[0]<dig[1])) {
+        yok = true;
+      } else {
+        yok = false;
+      }
+
+
+      if ((sos < 2) || !yok){
+        $('.form').after('<div id="kotae">nea</div>');
+      } else {
+        $('#kotae').remove();
+      }
+
+      $('.radcheck').each(function(){
+        if ($(this).prop('checked') == true){
+          radius = $(this).val();
+        }
+      });
+     }
    </script>
  </head>
  <body>
@@ -147,7 +196,7 @@
            </svg>
          </div>
          <div class="form">
-           <form action="main.php" method="get">
+           <form>
              <table>
                <tr>
                  <td></td>
@@ -163,18 +212,18 @@
                </tr>
                <tr>
                  <td>x</td>
-                 <td><input type="checkbox" name="xdim" value="-5"></td>
-                 <td><input type="checkbox" name="xdim" value="-4"></td>
-                 <td><input type="checkbox" name="xdim" value="-3"></td>
-                 <td><input type="checkbox" name="xdim" value="-2"></td>
-                 <td><input type="checkbox" name="xdim" value="-1"></td>
-                 <td><input type="checkbox" name="xdim" value="0"></td>
-                 <td><input type="checkbox" name="xdim" value="1"></td>
-                 <td><input type="checkbox" name="xdim" value="2"></td>
-                 <td><input type="checkbox" name="xdim" value="3"></td>
+                 <td><input type="checkbox" class="xdim" value="-5"></td>
+                 <td><input type="checkbox" class="xdim" value="-4"></td>
+                 <td><input type="checkbox" class="xdim" value="-3"></td>
+                 <td><input type="checkbox" class="xdim" value="-2"></td>
+                 <td><input type="checkbox" class="xdim" value="-1"></td>
+                 <td><input type="checkbox" class="xdim" value="0"></td>
+                 <td><input type="checkbox" class="xdim" value="1"></td>
+                 <td><input type="checkbox" class="xdim" value="2"></td>
+                 <td><input type="checkbox" class="xdim" value="3"></td>
                </tr>
              </table>
-             <p>y</p><input type="text" name="ydim" placeholder="(-5..5)">
+             <p>y</p><input id="ydim" type="text" name="ydim" placeholder="(-5..5)">
              <table>
                <tr>
                  <td></td>
@@ -193,7 +242,7 @@
                  <td><input class="radcheck" type="checkbox" name="radius" value="3"></td>
                </tr>
              </table>
-             <input type="submit">
+             <input id="butt" type="button" onclick="pognali();">
            </form>
          </div>
    </div>
