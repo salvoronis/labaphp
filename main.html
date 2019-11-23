@@ -5,7 +5,7 @@
    <title>piha</title>
    <style type="text/css">
      #header {
-       font-family: cursive;
+       font-family: Comic Sans MS, Comic Sans, cursive;
        font-size: 20pt;
        color: #576333;
        padding-bottom: 20px;
@@ -83,7 +83,7 @@
    <script type="text/javascript">
      $(function(){
        var counter = 0;
-       $(".graph").on('click', function(e){
+       /*$(".graph").on('click', function(e){
            e.preventDefault();
            $.ajax({
              type: "POST",
@@ -95,7 +95,7 @@
                addToTable(answer[1], answer[2]);
                }
            });
-       });
+       });*/
 
        function addToTable (hit, stime){
          $("#resultSet tr:last").after('<tr class="tableCell"><td>'+counter+'</td><td>'+hit+'</td><td>'+new Date().format("dd mmm HH:MM:ss")+'</td><td>'+stime+'</td></tr>');
@@ -106,47 +106,51 @@
          $('.radcheck').removeAttr('checked','checked');
          $(this).prop('checked', true);
        });
+       $('.xdim').click(function(){
+         $('.xdim').removeAttr('checked','checked');
+         $(this).prop('checked', true);
+       });
      });
 
     function pognali(){
-      var sos = 0;
       var yok = false;
-      var radius = 0;
-      let xar = new Array();
-      var minx;
-      var maxx;
+      var radius = 0; //r
+      var x; //x
       var xdim = $('.xdim').each(function(){
          if ($(this).prop('checked') == true){
-           sos++;
-           xar.push($(this).val());
-           maxx = Math.max.apply(Math, xar);
-           minx = Math.min.apply(Math, xar);
+           x = $(this).val();
          }
        });
-
-      var ydim = $('#ydim').val();
-      var reg = /^-?[0-5]..-?[0-5]$/
+      //y start
+      var ydim = $('#ydim').val(); // y
+      var reg = /^-?[0-5]$/
       yok = reg.test(ydim);
-      var dig = ydim.split('..');
-      if (yok && (dig[0]<dig[1])) {
-        yok = true;
-      } else {
-        yok = false;
-      }
-
+      //r start
       $('.radcheck').each(function(){
         if ($(this).prop('checked') == true){
           radius = $(this).val();
         }
       });
-
-
-      if ((sos < 2) || !yok){
+      //send data
+      if (!yok){
+        $('#kotae').remove();
         $('.form').after('<div id="kotae">Data error</div>');
       } else {
         $('#kotae').remove();
-        doIT(maxx, minx, dig[0], dig[1]);
-        doFig(radius)
+        console.log(x);
+        console.log(ydim);
+        console.log(radius);
+        $.ajax({
+          type: "GET",
+          url: "table.php",
+          data: 'x='+x+'&y='+ydim+'&r='+radius,
+          success: function(response){
+            doFig(radius);
+            var answer = response.split(" ");
+            console.log(answer);
+            //addToTable(answer[1], answer[2]);
+            }
+        });
       }
      }
 
@@ -235,12 +239,12 @@
              <g class="data" data-setname="Our first data set">
                  <rect class="meichu" x="195" y="270" width="75" height="150"/>
                  <polygon id="triangle" class="meichu" points="270,195 195,270 270,270"></polygon>
-                 <path class="meichu" fill="gray" d="M 270 345 A 75 75, 90, 0, 0, 345 270 L 270 270 Z"></path>
+                 <path class="meichu" d="M 270 345 A 75 75, 90, 0, 0, 345 270 L 270 270 Z"></path>
              </g>
            </svg>
          </div>
          <div class="form">
-           <form>
+           <form id="forma">
              <table>
                <tr>
                  <td></td>
@@ -261,7 +265,7 @@
                  <td><input type="checkbox" class="xdim" value="-3"></td>
                  <td><input type="checkbox" class="xdim" value="-2"></td>
                  <td><input type="checkbox" class="xdim" value="-1"></td>
-                 <td><input type="checkbox" class="xdim" value="0"></td>
+                 <td><input type="checkbox" class="xdim" value="0" checked></td>
                  <td><input type="checkbox" class="xdim" value="1"></td>
                  <td><input type="checkbox" class="xdim" value="2"></td>
                  <td><input type="checkbox" class="xdim" value="3"></td>
@@ -286,7 +290,7 @@
                  <td><input class="radcheck" type="checkbox" name="radius" value="3" checked></td>
                </tr>
              </table>
-             <input id="butt" type="button" onclick="pognali();">
+             <input id="butt" type="button" onclick="pognali();" value="Построить">
            </form>
          </div>
    </div>
