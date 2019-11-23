@@ -82,26 +82,12 @@
    <script src="lib/date.format.js"></script>
    <script type="text/javascript">
      $(function(){
-       var counter = 0;
-       /*$(".graph").on('click', function(e){
-           e.preventDefault();
-           $.ajax({
-             type: "POST",
-             url: "table.php",
-             data: 'attrib='+$(e.target).attr("class"),
-             success: function(response){
-               var answer = response.split(" ");
-               counter++;
-               addToTable(answer[1], answer[2]);
-               }
-           });
-       });*/
-
-       function addToTable (hit, stime){
-         $("#resultSet tr:last").after('<tr class="tableCell"><td>'+counter+'</td><td>'+hit+'</td><td>'+new Date().format("dd mmm HH:MM:ss")+'</td><td>'+stime+'</td></tr>');
-       }
-
-
+       $("input").keydown(function(event){
+        if(event.keyCode == 13){
+          event.preventDefault();
+          return false;
+        }
+      });
        $('.radcheck').click(function(){
          $('.radcheck').removeAttr('checked','checked');
          $(this).prop('checked', true);
@@ -111,6 +97,10 @@
          $(this).prop('checked', true);
        });
      });
+     var counter = 0;
+     function addToTable (hit, stime,x,y,r){
+       $("#resultSet tr:last").after('<tr class="tableCell"><td>'+counter+'</td><td>'+hit+'</td><td>'+new Date().format("dd mmm HH:MM:ss")+'</td><td>'+stime+'</td><td>'+x+'</td><td>'+y+'</td><td>'+r+'</td></tr>');
+     }
 
     function pognali(){
       var yok = false;
@@ -137,9 +127,6 @@
         $('.form').after('<div id="kotae">Data error</div>');
       } else {
         $('#kotae').remove();
-        console.log(x);
-        console.log(ydim);
-        console.log(radius);
         $.ajax({
           type: "GET",
           url: "table.php",
@@ -147,8 +134,8 @@
           success: function(response){
             doFig(radius);
             var answer = response.split(" ");
-            console.log(answer);
-            //addToTable(answer[1], answer[2]);
+            counter++;
+            addToTable(answer[1], answer[2], x,ydim,radius);
             }
         });
       }
@@ -301,6 +288,9 @@
          <th>Попадание</th>
          <th>Время</th>
          <th>Время работы скрипта</th>
+         <th>x</th>
+         <th>y</th>
+         <th>r</th>
        </tr>
      </table>
    </div>
